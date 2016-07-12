@@ -146,7 +146,6 @@ if fio.has_daily() is True:
 		# Or access attributes directly for a given minute.
 		# daily.day_7_time would also work
 		print(daily.day_5_time)
-	print
 else:
 	print('No Daily data')
 ```
