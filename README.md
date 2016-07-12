@@ -20,9 +20,9 @@ Get the current temperature and precipitation probability:
 >>> from forecastiopy import *
 >>> fio = ForecastIO.ForecastIO(YOUR_APY_KEY, latitude=Lisbon[0], longitude=Lisbon[1])
 >>> current = FIOCurrently.FIOCurrently(fio)
->>> print 'Temperature:', current.temperature
+>>> print('Temperature:', current.temperature)
 Temperature: 11.07
->>> print 'Precipitation Probability:', current.precipProbability
+>>> print('Precipitation Probability:', current.precipProbability)
 Precipitation Probability: 0.29
 ```
 
@@ -72,92 +72,83 @@ fio = ForecastIO.ForecastIO(apikey,
                             lang=ForecastIO.ForecastIO.LANG_ENGLISH,
                             latitude=Lisbon[0], longitude=Lisbon[1])
 
-print 'Latitude', fio.latitude, 'Longitude', fio.longitude
-print 'Timezone', fio.timezone, 'Offset', fio.offset
-print fio.get_url() # You might want to see the request url
-print
+print('Latitude', fio.latitude, 'Longitude', fio.longitude)
+print('Timezone', fio.timezone, 'Offset', fio.offset)
+print(fio.get_url()) # You might want to see the request url
+
 ```
 
 **Get Currently weather data for the requested location**
 ```python
 if fio.has_currently() is True:
 	currently = FIOCurrently.FIOCurrently(fio)
-	print 'Currently'
+	print('Currently')
 	for item in currently.get().keys():
-		print item + ' : ' + unicode(currently.get()[item])
-	print
+		print(item + ' : ' + unicode(currently.get()[item]))
 	# Or access attributes directly
-	print currently.temperature
-	print currently.humidity
-	print
+	print(currently.temperature)
+	print(currently.humidity)
 else:
-	print 'No Currently data'
+	print('No Currently data')
 ```
 
 **Get Minutely weather data for the requested location**
 ```python
 if fio.has_minutely() is True:
 	minutely = FIOMinutely.FIOMinutely(fio)
-	print 'Minutely'
-	print 'Summary:', minutely.summary
-	print 'Icon:', minutely.icon
-	print
+	print('Minutely')
+	print('Summary:', minutely.summary)
+	print('Icon:', minutely.icon)
+
 	for minute in xrange(0, minutely.minutes()):
-		print 'Minute', minute+1
+		print('Minute', minute+1)
 		for item in minutely.get_minute(minute).keys():
-			print item + ' : ' + unicode(minutely.get_minute(minute)[item])
-		print
+			print(item + ' : ' + unicode(minutely.get_minute(minute)[item]))
+
 		# Or access attributes directly for a given minute.
 		# minutely.minute_3_time would also work
-		print minutely.minute_1_time
-		print
-	print
+		print(minutely.minute_1_time)
 else:
-	print 'No Minutely data'
+	print('No Minutely data')
 ```
 
 **Get Hourly weather data for the requested location**
 ```python
 if fio.has_hourly() is True:
 	hourly = FIOHourly.FIOHourly(fio)
-	print 'Hourly'
-	print 'Summary:', hourly.summary
-	print 'Icon:', hourly.icon
-	print
-	for hour in xrange(0, hourly.hours()):
-		print 'Hour', hour+1
+	print('Hourly')
+	print('Summary:', hourly.summary)
+	print('Icon:', hourly.icon)
+
+	for hour in range(0, hourly.hours()):
+		print('Hour', hour+1)
 		for item in hourly.get_hour(hour).keys():
-			print item + ' : ' + unicode(hourly.get_hour(hour)[item])
-		print
+			print(item + ' : ' + str(hourly.get_hour(hour)[item]))
 		# Or access attributes directly for a given minute.
 		# hourly.hour_5_time would also work
-		print hourly.hour_3_time
-		print
-	print
+		print(hourly.hour_3_time)
 else:
-	print 'No Hourly data'
+	print('No Hourly data')
 ```
 
 **Get Daily weather data for the requested location**
 ```python
 if fio.has_daily() is True:
 	daily = FIODaily.FIODaily(fio)
-	print 'Daily'
-	print 'Summary:', daily.summary
-	print 'Icon:', daily.icon
-	print
-	for day in xrange(0, daily.days()):
-		print 'Day', day+1
+	print('Daily')
+	print('Summary:', daily.summary)
+	print('Icon:', daily.icon)
+
+	for day in range(0, daily.days()):
+		print('Day', day+1)
 		for item in daily.get_day(day).keys():
-			print item + ' : ' + unicode(daily.get_day(day)[item])
-		print
+			print(item + ' : ' + str(daily.get_day(day)[item]))
 		# Or access attributes directly for a given minute.
 		# daily.day_7_time would also work
-		print daily.day_5_time
-		print
+		print(daily.day_5_time)
 	print
 else:
-	print 'No Daily data'
+	print('No Daily data')
 ```
 
 **Get Flags weather data for the requested location**
@@ -167,24 +158,24 @@ if fio.has_flags() is True:
 	flags = FIOFlags.FIOFlags(fio)
 	pprint(vars(flags))
 	# Get units directly
-	print flags.units
+	print(flags.units)
 else:
-	print 'No Flags data'
+	print('No Flags data')
 ```
 
 **Get Alerts weather data for the requested location**
-It should work just like Flags and the other ones, but at the time I am writting this I could not find a location with alerts to test on.
+It should work just like Flags and the other ones, but at the time I am writing this, I could not find a location with alerts to test on.
 
 **A note on time**
 The API returns time in unix time. Although this is a good computer format,
 it is not particulary _human-readable_
-So, to get a more _human-sane_ format, you can do soething like this:
+So, to get a more _human-sane_ format, you can do something like this:
 ```python
 import datetime
 
 time = datetime.datetime.fromtimestamp(int(currently.time).strftime('%Y-%m-%d %H:%M:%S')
-print 'unix time:', currently.time
-print 'time:', time
+print('unix time:', currently.time)
+print('time:', time)
 
 ```
 
