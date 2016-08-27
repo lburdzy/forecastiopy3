@@ -9,6 +9,7 @@ The resulting object is used by the other classes to get the information.
 import sys
 import json
 import requests
+import datetime
 
 
 class ForecastIO(object):
@@ -29,7 +30,6 @@ class ForecastIO(object):
 
     forecast_io_api_key = None
     units_url = None
-    time_url = None
     extend_url = None
     exclude_url = None
     lang_url = None
@@ -69,7 +69,7 @@ class ForecastIO(object):
     LANG_RUSSIAN = 'ru'
 
     def __init__(self, apikey, extend=None, exclude=None, units=UNITS_AUTO, \
-    lang=LANG_ENGLISH, latitude=None, longitude=None):
+    lang=LANG_ENGLISH, latitude=None, longitude=None, forecast_time=None):
         """
         A valid api key must be provided in the object instantiation.
         Other options are available.
@@ -86,30 +86,31 @@ class ForecastIO(object):
             self.lang_url = lang
             self.latitude = latitude
             self.longitude = longitude
+            self.forecast_time = forecast_time
             if latitude is not None and longitude is not None:
-                self.get_forecast(latitude, longitude)
+                self.get_forecast(latitude, longitude, forecast_time)
             else:
                 print('Latitude or longitude not set')
         else:
             print('The API Key doesn\'t seam to be valid.')
 
-    def get_forecast(self, latitude, longitude):
+    def get_forecast(self, latitude, longitude, forecast_time=None):
         """
         Gets the weather data and stores it in the respective dictionaries if
         available.
         This function should be used to fetch weather information.
         """
-        reply = self.http_get(self.url_builder(latitude, longitude))
+        reply = self.http_get(self.url_builder(latitude, longitude, forecast_time))
         self.forecast = json.loads(reply)
 
         for item in self.forecast.keys():
             setattr(self, item, self.forecast[item])
 
-    def url_builder(self, latitude, longitude):
+    def url_builder(self, latitude, longitude, forecast_time=None):
         """
         This function is used to build the correct url to make the request
         to the forecast.io api.
-        Recieves the latitude and the longitude.
+        Recieves the latitude and the longitude. forecast_time parameter is optional.
         Return a string with the url.
         """
         try:
@@ -119,8 +120,8 @@ class ForecastIO(object):
             raise ValueError('Latitude and Longitude must be a float number')
         url = self.forecast_io_url + self.forecast_io_api_key + '/'
         url += str(latitude).strip() + ',' + str(longitude).strip()
-        if self.time_url and not self.time_url.isspace():
-            url += ',' + self.time_url.strip()
+        if forecast_time:
+            url += ',' + datetime.datetime.strftime(forecast_time, '%Y-%m-%dT%H:%M:%S')
         url += '?units=' + self.units_url.strip()
         url += '&lang=' + self.lang_url.strip()
         if self.exclude_url is not None:
@@ -146,7 +147,7 @@ class ForecastIO(object):
         Returns:
             The built url string
         """
-        return self.url_builder(self.latitude, self.longitude)
+        return self.url_builder(self.latitude, self.longitude, self.forecast_time)
 
     def http_get(self, request_url):
         """
