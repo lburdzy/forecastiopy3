@@ -121,7 +121,7 @@ class ForecastIO(object):
         url = self.forecast_io_url + self.forecast_io_api_key + '/'
         url += str(latitude).strip() + ',' + str(longitude).strip()
         if forecast_time:
-            url += ',' + datetime.datetime.strftime(forecast_time, '%Y-%m-%dT%H:%M:%S')
+            url += ',' + str(forecast_time)
         url += '?units=' + self.units_url.strip()
         url += '&lang=' + self.lang_url.strip()
         if self.exclude_url is not None:
